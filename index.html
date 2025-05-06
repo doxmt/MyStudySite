@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Study Site</title>
+  <link rel="stylesheet" href="style.css" />
+
+</head>
+<body>
+  <div id="container">
+    <!-- 사이드바 -->
+    <nav id="sidebar">
+        <h1>MyStudySite</h1>
+      <ul>
+        <li><a href="#" data-topic="topic1">JavaScript</a></li>
+        <li><a href="#" data-topic="topic2">React</a></li>
+        <li><a href="#" data-topic="topic3">TypeScript</a></li>
+        <li><a href="#" data-topic="topic4">Git</a></li>
+        <li id="add-topic-btn">
+          <button>+</button>
+        </li>
+
+      </ul>
+    </nav>
+  
+    <!-- 오른쪽 콘텐츠 -->
+    <div id="right-content">
+      <header>
+        <p>공부 기록</p>
+      </header>
+  
+      <main>
+        <section id="part-list">
+          <!-- 선택한 주제의 파트 목록이 여기에 동적으로 렌더링됨 -->
+        </section>
+      </main>
+  
+      <footer>
+        <p>© 2025 MyStudySite by 송태하</p>
+      </footer>
+    </div>
+  </div>
+  
+
+
+  <script src="script.js"></script>
+
+</body>
+</html>
