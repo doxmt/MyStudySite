@@ -20,10 +20,16 @@ document.addEventListener("DOMContentLoaded", () => {
       delBtn.className = "delete-btn";
 
       // 삭제 기능
+      // 삭제 기능
       delBtn.addEventListener("click", (e) => {
         e.stopPropagation(); // 링크 클릭 방지
-        topicList.removeChild(li);
+
+        const confirmDelete = confirm("정말 이 주제를 삭제하시겠습니까?");
+        if (confirmDelete) {
+          topicList.removeChild(li);
+        }
       });
+
 
       li.appendChild(a);
       li.appendChild(delBtn);
