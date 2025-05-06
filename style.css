@@ -23,6 +23,7 @@ body {
 }
 
 #sidebar li {
+  position: relative;
   padding: 10px 0;
   border-top: 1px solid #ccc; 
   padding-left: 10px;
@@ -31,6 +32,23 @@ body {
 #sidebar li:last-child {
   border-bottom: 1px solid #ccc; 
 }
+
+.delete-btn {
+  position: absolute;
+  right: 10px;
+  background: transparent;
+  border: none;
+  color: #999;
+  cursor: pointer;
+  font-size: 16px;
+  
+}
+
+.delete-btn:hover {
+  color: #e53935; /* 빨간색 강조 */
+}
+
+
 
 #right-content {
   flex: 1;
@@ -48,4 +66,23 @@ header, footer {
 
 main {
   flex: 1;
+}
+
+#add-topic-btn {
+  text-align: center;
+  border-top: 1px solid #ccc;
+}
+
+#add-topic-btn button {
+  padding: 5px 10px;
+  border: none;
+  background-color: #4f46e5;
+  color: white;
+  font-weight: bold;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#add-topic-btn button:hover {
+  background-color: #3c3acc;
 }
