@@ -1,28 +1,71 @@
 document.addEventListener("DOMContentLoaded", () => {
   const topicList = document.getElementById("topic-list");
   const addTopicBtn = document.getElementById("add-topic-btn");
+  const addPartBtn = document.getElementById("add-part-btn");
+  const partList = document.getElementById("part-list-items");
+  const headerTitle = document.querySelector("header p");
 
-  // 로컬 스토리지에서 기존 주제 불러오기
+  // URL에서 주제명 추출
+  const urlParams = new URLSearchParams(window.location.search);
+  const topic = urlParams.get("topic");
+
+  // 초기화 - 주제 목록 로드
   let topics = loadTopics();
-  topics.forEach(topic => createTopicElement(topic));
+  topics.forEach(createTopicElement);
 
-  // 주제 추가 버튼 클릭 이벤트
+  // 서브 파트 데이터 로드
+  let subParts = loadSubParts(topic);
+  subParts.forEach(createPartElement);
+
+  // 주제명 표시
+  if (topic) {
+    headerTitle.textContent = topic;
+  } else {
+    headerTitle.textContent = "주제를 선택해주세요.";
+  }
+
+  /**
+   * 주제 추가 버튼 클릭
+   */
   addTopicBtn.addEventListener("click", () => {
     const newTopic = prompt("추가할 주제 이름을 입력하세요:");
 
     if (newTopic && newTopic.trim() !== "") {
       const trimmedTopic = newTopic.trim();
 
-      // 중복 체크
       if (topics.includes(trimmedTopic)) {
         alert("이미 존재하는 주제입니다.");
         return;
       }
 
-      topics.push(trimmedTopic); // 배열에 추가
-      saveTopics(topics);    // 저장
+      topics.push(trimmedTopic);
+      saveTopics(topics);
+      createTopicElement(trimmedTopic);
+    }
+  });
 
-      createTopicElement(trimmedTopic); // 화면에 추가
+  /**
+   * 서브 파트 추가 버튼 클릭
+   */
+  addPartBtn.addEventListener("click", () => {
+    if (!topic) {
+      alert("주제를 먼저 선택해주세요.");
+      return;
+    }
+
+    const newPart = prompt("추가할 서브 파트 이름을 입력하세요:");
+
+    if (newPart && newPart.trim() !== "") {
+      const trimmedPart = newPart.trim();
+
+      if (subParts.includes(trimmedPart)) {
+        alert("이미 존재하는 서브 파트입니다.");
+        return;
+      }
+
+      subParts.push(trimmedPart);
+      saveSubParts(topic, subParts);
+      createPartElement(trimmedPart);
     }
   });
 
@@ -33,28 +76,29 @@ document.addEventListener("DOMContentLoaded", () => {
   function createTopicElement(topic) {
     const li = document.createElement("li");
 
-    // 링크
     const a = document.createElement("a");
-    a.href = `topic.html?topic=${encodeURIComponent(topic)}`; // 링크 생성
+    a.href = `topic.html?topic=${encodeURIComponent(topic)}`;
     a.textContent = topic;
 
-    // 삭제 버튼
     const delBtn = document.createElement("button");
     delBtn.textContent = "X";
     delBtn.className = "delete-btn";
 
-    // 삭제 기능
     delBtn.addEventListener("click", (e) => {
-      e.stopPropagation(); // 링크 클릭 방지
+      e.stopPropagation();
 
       const confirmDelete = confirm("정말 이 주제를 삭제하시겠습니까?");
       if (confirmDelete) {
-        // 화면에서 삭제
         topicList.removeChild(li);
-
-        // 배열에서 삭제
         topics = topics.filter(t => t !== topic);
-        saveTopics(topics); // 저장소 업데이트
+        saveTopics(topics);
+
+        // 주제 삭제 시 해당 서브 파트도 모두 삭제
+        if (topic === a.textContent) {
+          subParts = [];
+          saveSubParts(topic, []);
+          partList.innerHTML = "";
+        }
       }
     });
 
@@ -62,37 +106,84 @@ document.addEventListener("DOMContentLoaded", () => {
     li.appendChild(delBtn);
     topicList.insertBefore(li, addTopicBtn);
   }
-});
 
-/**
- * 주제 저장 함수
- * @param {Array} topics
- */
-function saveTopics(topics) {
-  localStorage.setItem("studyTopics", JSON.stringify(topics));
-}
+  /**
+   * 서브 파트 항목 생성 함수
+   * @param {string} part
+   */
+  function createPartElement(part) {
+    const li = document.createElement("li");
+    li.textContent = part;
+    li.className = "part-item";
 
-/**
- * 주제 불러오기 함수
- * @returns {Array}
- */
-function loadTopics() {
-  const saved = localStorage.getItem("studyTopics");
-  return saved ? JSON.parse(saved) : [];
-}
+    // 클릭 시 part.html로 이동
+    li.addEventListener("click", () => {
+      window.location.href = `part.html?topic=${encodeURIComponent(topic)}&part=${encodeURIComponent(part)}`;
+    });
 
-document.addEventListener("DOMContentLoaded", () => {
-  const urlParams = new URLSearchParams(window.location.search);
-  const topic = urlParams.get("topic");
+    const delBtn = document.createElement("button");
+    delBtn.textContent = "X";
+    delBtn.className = "delete-btn";
 
-  const headerTitle = document.querySelector("header p");
-  const partList = document.getElementById("part-list");
+    delBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
 
-  if (topic) {
-    headerTitle.textContent = topic;  // 헤더에 주제명 표시
-    partList.innerHTML = `<h2>${topic}에 대한 내용</h2>`;
-  } else {
-    headerTitle.textContent = "주제를 선택해주세요.";
-    partList.innerHTML = `<p>주제가 지정되지 않았습니다.</p>`;
+      const confirmDelete = confirm("정말 이 서브 파트를 삭제하시겠습니까?");
+      if (confirmDelete) {
+        partList.removeChild(li);
+        subParts = subParts.filter(p => p !== part);
+        saveSubParts(topic, subParts);
+      }
+    });
+
+    li.appendChild(delBtn);
+    partList.appendChild(li);
+  }
+
+  /**
+   * 주제 저장 함수
+   * @param {Array} topics
+   */
+  function saveTopics(topics) {
+    localStorage.setItem("studyTopics", JSON.stringify(topics));
+  }
+
+  /**
+   * 주제 불러오기 함수
+   * @returns {Array}
+   */
+  function loadTopics() {
+    const saved = localStorage.getItem("studyTopics");
+    return saved ? JSON.parse(saved) : [];
+  }
+
+  /**
+   * 서브 파트 저장 함수
+   * @param {string} topic
+   * @param {Array} parts
+   */
+  function saveSubParts(topic, parts) {
+    const data = loadAllParts();
+    data[topic] = parts;
+    localStorage.setItem("subParts", JSON.stringify(data));
+  }
+
+  /**
+   * 서브 파트 불러오기 함수
+   * @param {string} topic
+   * @returns {Array}
+   */
+  function loadSubParts(topic) {
+    const data = loadAllParts();
+    return data[topic] || [];
+  }
+
+  /**
+   * 모든 서브 파트 데이터 불러오기
+   * @returns {Object}
+   */
+  function loadAllParts() {
+    const saved = localStorage.getItem("subParts");
+    return saved ? JSON.parse(saved) : {};
   }
 });

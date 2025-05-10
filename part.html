@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Study Site</title>
-  <link rel="stylesheet" href="topic.css" />
+  <link rel="stylesheet" href="part.css" />
+
 </head>
 <body>
   <div id="container">
@@ -21,15 +22,12 @@
     <!-- 오른쪽 콘텐츠 -->
     <div id="right-content">
       <header>
-        <p>주제 내용</p>
+        <p id="header-title">주제 > 파트</p>
       </header>
   
       <main>
         <section id="part-list">
-          <ul id="part-list-items">
-            <!-- 서브 파트 추가 버튼 -->
-            <li id="add-part-btn" aria-label="서브 파트 추가"></li>
-          </ul>
+          <!-- 선택한 주제의 파트 목록이 여기에 동적으로 렌더링됨 -->
         </section>
       </main>
   
@@ -38,7 +36,11 @@
       </footer>
     </div>
   </div>
+  
 
-  <script src="topic.js"></script>
+
+  <script src="part.js"></script>
+
 </body>
 </html>
+
