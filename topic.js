@@ -80,3 +80,19 @@ function loadTopics() {
   const saved = localStorage.getItem("studyTopics");
   return saved ? JSON.parse(saved) : [];
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const topic = urlParams.get("topic");
+
+  const headerTitle = document.querySelector("header p");
+  const partList = document.getElementById("part-list");
+
+  if (topic) {
+    headerTitle.textContent = topic;  // 헤더에 주제명 표시
+    partList.innerHTML = `<h2>${topic}에 대한 내용</h2>`;
+  } else {
+    headerTitle.textContent = "주제를 선택해주세요.";
+    partList.innerHTML = `<p>주제가 지정되지 않았습니다.</p>`;
+  }
+});
