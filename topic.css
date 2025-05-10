@@ -127,7 +127,7 @@ main {
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
-  background-color: #4f46e5;
+  background-color: #ffffff;
   border: none;
   cursor: pointer;
   transition: background-color 0.3s, transform 0.3s;
@@ -154,6 +154,7 @@ main {
   position: relative;
   cursor: pointer;
   transition: background-color 0.3s;
+  font-size: 40px;
 }
 
 #part-list-items li:hover {
