@@ -1,5 +1,6 @@
 body {
   margin: 0;
+  font-family: Arial, sans-serif;
 }
 
 #container {
@@ -24,7 +25,7 @@ body {
 
 #sidebar h1 {
   text-align: center;
-  padding: 0px 0px 30px 0px;
+  padding-bottom: 30px;
 }
 
 #sidebar ul {
@@ -65,31 +66,60 @@ body {
   flex-direction: column;
 }
 
-header, footer {
+header {
   background-color: #B8B8B8;
   color: white;
-  font-size: 15px;
-  text-align: center;
   padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.upload-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
+.upload-icon {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.upload-icon:hover {
+  transform: scale(1.1);
+}
+
+.hidden-input {
+  display: none;
+}
+
+footer {
+  background-color: #B8B8B8;
+  color: white;
+  padding: 10px;
+  text-align: center;
 }
 
 main {
   background-color: #787878;
   flex: 1;
   padding: 20px;
-  outline: none !important;   /* 포커스 시 outline 제거 */
-  border: none !important;    /* 포커스 시 border 제거 */
-  box-shadow: none !important; /* 포커스 시 그림자 제거 */
-  color: #fff;
   overflow-y: auto;
-}
-
-main:focus,
-main:focus-visible,
-main:focus-within {
-  outline: none !important;
-  border: none !important;
-  box-shadow: none !important;
+  outline: none;
+  border: none;
+  color: #fff;
 }
 
 main:empty:before {
@@ -105,10 +135,9 @@ main:empty:before {
 
 #add-topic-btn button {
   padding: 5px 10px;
-  border: none;
   background-color: #B8B8B8;
   color: white;
-  font-weight: bold;
+  border: none;
   border-radius: 4px;
   cursor: pointer;
 }
@@ -120,7 +149,6 @@ main:empty:before {
 .toolbar {
   position: absolute;
   background-color: #333;
-  color: #fff;
   padding: 5px;
   border-radius: 5px;
   display: flex;
@@ -133,10 +161,7 @@ main:empty:before {
   height: 30px;
   border: none;
   cursor: pointer;
-  padding: 0;
 }
-
-
 
 .toolbar button {
   background: transparent;
@@ -154,3 +179,41 @@ main:empty:before {
   display: none;
 }
 
+/* 이미지 관련 스타일 */
+main img {
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 10px;
+}
+.image-wrapper {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 10px;
+}
+
+.resizable-image {
+  max-width: 100%;
+  height: auto;
+  cursor: pointer;
+  border: none; /* 초기 상태에서 테두리 숨김 */
+}
+
+.resizer {
+  width: 16px;
+  height: 16px;
+  background-color: #3c3acc;
+  position: absolute;
+  right: -8px;
+  bottom: -8px;
+  cursor: nwse-resize;
+  border-radius: 50%;
+  display: none; /* 초기 상태는 숨김 */
+}
+
+.image-wrapper.active {
+  border: 1px dashed #3c3acc; /* 클릭 시에만 테두리 표시 */
+}
+
+.image-wrapper.active .resizer {
+  display: block;
+}

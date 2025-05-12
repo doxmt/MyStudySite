@@ -21,7 +21,13 @@
     <!-- 오른쪽 콘텐츠 -->
     <div id="right-content">
       <header>
-        <p id="header-title">주제 > 파트</p>
+        <div class="header-content">
+          <p id="header-title">주제 > 파트</p>
+          <button id="image-upload-btn" class="upload-btn">
+            <img src="images/image.png" alt="이미지 업로드" class="upload-icon" />
+          </button>
+          <input type="file" id="image-upload-input" accept="image/*" class="hidden-input" />
+        </div>
       </header>
   
       <!-- main 전체가 글쓰기 영역이 됨 -->
@@ -40,8 +46,8 @@
     <button onclick="formatText('bold')">B</button>
     <button onclick="formatText('italic')">I</button>
     <button onclick="formatText('underline')">U</button>
-    <button onclick="adjustFontSize(16)">A+</button>
-    <button onclick="adjustFontSize(12)">A-</button>
+    <button onclick="adjustFontSize(2)">A+</button>
+    <button onclick="adjustFontSize(-2)">A-</button>
     <input type="color" id="color-picker" onchange="changeTextColor(this.value)" title="텍스트 색상 변경" />
   </div>
 
