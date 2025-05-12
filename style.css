@@ -12,19 +12,21 @@ body {
   width: 200px;
   padding: 20px;
 }
-#sidebar a,h1 {
-  text-decoration: none;  /* 밑줄 제거 */
-  color: #ffffff;  /* 글자 색상 */
+
+#sidebar a, #sidebar h1 {
+  text-decoration: none;
+  color: #ffffff;
 }
 
 #sidebar a:hover {
-  text-decoration: underline;  /* 마우스 오버 시 밑줄 추가 (선택) */
+  text-decoration: underline;
 }
 
-#sidebar h1{
+#sidebar h1 {
   text-align: center;
-  padding: 0px 0px 30px 0px;
+  padding-bottom: 30px;
 }
+
 #sidebar ul {
   list-style: none;
   padding: 0;
@@ -34,12 +36,13 @@ body {
 #sidebar li {
   position: relative;
   padding: 10px 0;
-  border-top: 1px solid #ffffff; 
+  border-top: 1px solid #ffffff;
   padding-left: 10px;
   text-align: center;
 }
+
 #sidebar li:last-child {
-  border-bottom: 1px solid #ffffff; 
+  border-bottom: 1px solid #ffffff;
 }
 
 .delete-btn {
@@ -50,15 +53,15 @@ body {
   color: #999;
   cursor: pointer;
   font-size: 16px;
-  
 }
 
 .delete-btn:hover {
-  color: #e53935; /* 빨간색 강조 */
+  color: #e53935;
 }
 
 main {
   background-color: #787878;
+  padding: 20px;
 }
 
 #right-content {
@@ -71,12 +74,13 @@ header, footer {
   background-color: #B8B8B8;
   color: white;
   font-size: 15px;
-
   text-align: center;
+  padding: 10px 0;
 }
 
 main {
   flex: 1;
+  overflow-y: auto; /* 스크롤 가능 */
 }
 
 #add-topic-btn {
@@ -98,3 +102,80 @@ main {
   background-color: #3c3acc;
 }
 
+#part-list {
+  padding: 20px;
+  background-color: #787878;
+  border-radius: 8px;
+}
+
+#part-list-items {
+  display: grid;
+  gap: 40px;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); /* 최소/최대 너비 */
+  list-style: none;
+  padding: px;
+  margin: 0;
+}
+
+/* 서브 파트 추가 버튼 */
+#add-part-btn {
+  width: 240px;  
+  height: 240px;  
+  background-image: url('images/plusbutton.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: #ffffff;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.3s;
+  border-radius: 8px;
+}
+
+#add-part-btn:hover {
+  background-color: #3c3acc;
+  transform: scale(1.1);
+}
+
+/* 서브 파트 항목 */
+#part-list-items li {
+  width: 240px;  
+  height: 240px;  
+  background-color: #A5C9FF;
+  color: #fff;
+  font-weight: bold;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 8px;
+  position: relative;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  font-size: 40px;
+}
+
+#part-list-items li:hover {
+  transform: scale(1.1);
+}
+
+#part-list-items li .delete-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  color: #d00;
+  cursor: pointer;
+}
+
+#part-list-items li .delete-btn:hover {
+  color: #ff4444;
+  
+}
+
+main p {
+  color: #dddddd;
+text-align: center;
+font-weight: bold;
+}

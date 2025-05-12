@@ -4,6 +4,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const addPartBtn = document.getElementById("add-part-btn");
   const partList = document.getElementById("part-list-items");
   const headerTitle = document.querySelector("header p");
+  const mainTitle = document.getElementById("main-title");
+  
 
   // URL에서 주제명 추출
   const urlParams = new URLSearchParams(window.location.search);
@@ -24,6 +26,10 @@ document.addEventListener("DOMContentLoaded", () => {
     headerTitle.textContent = "주제를 선택해주세요.";
   }
 
+  mainTitle.addEventListener("click", () => {
+    window.location.href = "index.html";
+  });
+  
   /**
    * 주제 추가 버튼 클릭
    */

@@ -6,6 +6,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const toolbar = document.getElementById("toolbar");
   const imageUploadBtn = document.getElementById("image-upload-btn");
   const imageUploadInput = document.getElementById("image-upload-input");
+  const mainTitle = document.getElementById("main-title");
+  
+  mainTitle.addEventListener("click", () => {
+    window.location.href = "index.html";
+  });
 
 
   /**
