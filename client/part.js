@@ -200,11 +200,11 @@ window.formatText = function (command) {
   document.execCommand(command, false, null);
   saveContentOnChange();
 };
-
 /**
- * ✅ 글자 크기 조정
+ * ✅ 스타일 적용 함수
+ * @param {Object} styles - 적용할 스타일 객체 (e.g., { color: 'red', fontSize: '20px' })
  */
-window.adjustFontSize = function (sizeChange) {
+function applyStyleToSelection(styles) {
   const selection = window.getSelection();
   if (!selection.rangeCount) return;
 
@@ -212,27 +212,56 @@ window.adjustFontSize = function (sizeChange) {
   const selectedText = selection.toString();
   if (!selectedText) return;
 
-  const span = document.createElement("span");
-  span.style.fontSize = `${16 + sizeChange}px`;
-  span.textContent = selectedText;
-  range.deleteContents();
-  range.insertNode(span);
-};
+  let span;
+
+  const parentNode = range.startContainer.parentNode;
+
+  // 이미 <span>이면 해당 <span> 업데이트
+  if (parentNode.nodeName === "SPAN") {
+    span = parentNode;
+  } else {
+    // 새로 <span> 생성
+    span = document.createElement("span");
+    span.textContent = selectedText;
+    range.deleteContents();
+    range.insertNode(span);
+  }
+
+  // 스타일 적용
+  Object.keys(styles).forEach((key) => {
+    span.style[key] = styles[key];
+  });
+}
 
 /**
- * ✅ 텍스트 색상 변경
+ * ✅ 글자 크기 조정 함수
  */
-window.changeTextColor = function (color) {
+window.adjustFontSize = function (sizeChange) {
   const selection = window.getSelection();
   if (!selection.rangeCount) return;
 
   const range = selection.getRangeAt(0);
-  const span = document.createElement("span");
-  span.style.color = color;
-  span.textContent = selection.toString();
-  range.deleteContents();
-  range.insertNode(span);
+  const parentNode = range.startContainer.parentNode;
+
+  let currentSize = 16;
+
+  if (parentNode.nodeName === "SPAN" && parentNode.style.fontSize) {
+    currentSize = parseInt(parentNode.style.fontSize.replace("px", ""));
+  }
+
+  let newSize = currentSize + sizeChange;
+  newSize = Math.max(8, Math.min(newSize, 48)); // 최소 8px, 최대 48px
+
+  applyStyleToSelection({ fontSize: `${newSize}px` });
 };
+
+/**
+ * ✅ 텍스트 색상 변경 함수
+ */
+window.changeTextColor = function (color) {
+  applyStyleToSelection({ color: color });
+};
+
 
 /**
  * ✅ 주제 항목 생성 함수
