@@ -1,26 +1,37 @@
 const express = require('express');
-const mongoose = require('mongoose');
 const cors = require('cors');
+const mongoose = require('mongoose');
 require('dotenv').config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 
-// 라우터 불러오기
-const topicRoutes = require('./routes/topics');
-const contentRoutes = require('./routes/contents');
+const allowedOrigins = [
+  'http://localhost:5500',
+  'http://192.168.0.43:5500'
+];
 
-app.use(cors());
+app.use(cors({
+  origin: function (origin, callback) {
+    console.log('🔥 요청 origin:', origin);
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('CORS 차단됨'));
+    }
+  },
+  credentials: true
+}));
+
 app.use(express.json());
 
-// ✅ 라우터 연결
-app.use('/api/topics', topicRoutes);
-app.use('/api/contents', contentRoutes);
+app.use('/api/topics', require('./routes/topics'));
+app.use('/api/contents', require('./routes/contents'));
 
-mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-}).then(() => {
-  console.log('✅ MongoDB 연결 성공');
-  app.listen(PORT, () => console.log(`🚀 서버 실행 중: http://localhost:${PORT}`));
-}).catch(err => console.error('❌ MongoDB 연결 실패:', err));
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log('✅ MongoDB 연결 성공'))
+  .catch(err => console.error('❌ MongoDB 연결 실패:', err));
+
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`🚀 서버 실행 중: http://192.168.0.43:${PORT}`);
+});

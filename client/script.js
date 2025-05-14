@@ -1,67 +1,71 @@
-document.addEventListener("DOMContentLoaded", () => {
+import { API_BASE } from './utils/api.js'; // ← TypeScript 컴파일 후 .js로 접근
+
+document.addEventListener("DOMContentLoaded", async () => {
   const topicList = document.getElementById("topic-list");
   const addTopicBtn = document.getElementById("add-topic-btn");
   const partList = document.getElementById("part-list-items");
   const mainTitle = document.getElementById("main-title");
 
-  // 클릭 시 메인 페이지로 이동
   mainTitle.addEventListener("click", () => {
     window.location.href = "index.html";
   });
-  // 로컬 스토리지에서 기존 주제 불러오기
-  let topics = loadTopics();
-  topics.forEach(topic => createTopicElement(topic));
 
-  // 페이지 로드 시 모든 파트를 불러와서 렌더링
-  renderAllParts();
+  const topics = await loadTopicsFromServer();
+  topics.forEach(createTopicElement);
 
-  // 주제 추가 버튼 클릭 이벤트
-  addTopicBtn.addEventListener("click", () => {
+  const parts = await loadAllPartsFromServer();
+  renderParts(parts);
+
+  addTopicBtn.addEventListener("click", async () => {
     const newTopic = prompt("추가할 주제 이름을 입력하세요:");
+    if (!newTopic || !newTopic.trim()) return;
 
-    if (newTopic && newTopic.trim() !== "") {
-      const trimmedTopic = newTopic.trim();
+    const trimmedTopic = newTopic.trim();
+    if (topics.includes(trimmedTopic)) {
+      alert("이미 존재하는 주제입니다.");
+      return;
+    }
 
-      // 중복 체크
-      if (topics.includes(trimmedTopic)) {
-        alert("이미 존재하는 주제입니다.");
-        return;
-      }
+    try {
+      const res = await fetch(`${API_BASE}/api/topics`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: trimmedTopic })
+      });
+
+      if (!res.ok) throw new Error("추가 실패");
 
       topics.push(trimmedTopic);
-      saveTopics(topics);
-
       createTopicElement(trimmedTopic);
+    } catch (err) {
+      console.error("❌ 주제 추가 실패", err);
     }
   });
 
-  /**
-   * 주제 항목 생성 함수
-   * @param {string} topic
-   */
   function createTopicElement(topic) {
     const li = document.createElement("li");
 
-    // 링크
     const a = document.createElement("a");
     a.href = `topic.html?topic=${encodeURIComponent(topic)}`;
     a.textContent = topic;
 
-    // 삭제 버튼
     const delBtn = document.createElement("button");
     delBtn.textContent = "X";
     delBtn.className = "delete-btn";
 
-    // 삭제 기능
-    delBtn.addEventListener("click", (e) => {
+    delBtn.addEventListener("click", async (e) => {
       e.stopPropagation();
 
       const confirmDelete = confirm("정말 이 주제를 삭제하시겠습니까?");
-      if (confirmDelete) {
-        topicList.removeChild(li);
+      if (!confirmDelete) return;
 
-        topics = topics.filter(t => t !== topic);
-        saveTopics(topics);
+      try {
+        await fetch(`${API_BASE}/api/topics?name=${encodeURIComponent(topic)}`, {
+          method: "DELETE"
+        });
+        topicList.removeChild(li);
+      } catch (err) {
+        console.error("❌ 주제 삭제 실패", err);
       }
     });
 
@@ -70,28 +74,19 @@ document.addEventListener("DOMContentLoaded", () => {
     topicList.insertBefore(li, addTopicBtn);
   }
 
-  /**
-   * 모든 파트를 렌더링하는 함수
-   */
-  function renderAllParts() {
-    const allParts = loadAllParts();
+  function renderParts(parts) {
     partList.innerHTML = "";
 
-    if (allParts.length === 0) {
+    if (parts.length === 0) {
       partList.innerHTML = "<li>추가된 파트가 없습니다.</li>";
       return;
     }
 
-    allParts.forEach(({ topic, part }) => {
+    parts.forEach(({ topic, part }) => {
       createPartElement(topic, part);
     });
   }
 
-  /**
-   * 파트 항목 생성 함수
-   * @param {string} topic
-   * @param {string} part
-   */
   function createPartElement(topic, part) {
     const li = document.createElement("li");
     li.textContent = `${topic} - ${part}`;
@@ -104,38 +99,24 @@ document.addEventListener("DOMContentLoaded", () => {
     partList.appendChild(li);
   }
 
-  /**
-   * 모든 파트 데이터 불러오기
-   * @returns {Array}
-   */
-  function loadAllParts() {
-    const saved = localStorage.getItem("subParts");
-    const data = saved ? JSON.parse(saved) : {};
-    const parts = [];
-
-    for (const topic in data) {
-      data[topic].forEach(part => {
-        parts.push({ topic, part });
-      });
+  async function loadTopicsFromServer() {
+    try {
+      const res = await fetch(`${API_BASE}/api/topics`);
+      const topics = await res.json();
+      return topics.map(t => t.name);
+    } catch (err) {
+      console.error("❌ 주제 불러오기 실패", err);
+      return [];
     }
+  }
 
-    return parts;
+  async function loadAllPartsFromServer() {
+    try {
+      const res = await fetch(`${API_BASE}/api/contents/all`);
+      return await res.json();
+    } catch (err) {
+      console.error("❌ 파트 불러오기 실패", err);
+      return [];
+    }
   }
 });
-
-/**
- * 주제 저장 함수
- * @param {Array} topics
- */
-function saveTopics(topics) {
-  localStorage.setItem("studyTopics", JSON.stringify(topics));
-}
-
-/**
- * 주제 불러오기 함수
- * @returns {Array}
- */
-function loadTopics() {
-  const saved = localStorage.getItem("studyTopics");
-  return saved ? JSON.parse(saved) : [];
-}

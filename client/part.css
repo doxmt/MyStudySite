@@ -181,7 +181,7 @@ main:empty:before {
 
 /* 이미지 관련 스타일 */
 main img {
-  max-width: 100%;
+  max-width: none;
   height: auto;
   margin-bottom: 10px;
 }
@@ -192,7 +192,7 @@ main img {
 }
 
 .resizable-image {
-  max-width: 100%;
+  max-width: none;
   height: auto;
   cursor: pointer;
   border: none; /* 초기 상태에서 테두리 숨김 */
@@ -208,6 +208,7 @@ main img {
   cursor: nwse-resize;
   border-radius: 50%;
   display: none; /* 초기 상태는 숨김 */
+  z-index: 9999;
 }
 
 .image-wrapper.active {
