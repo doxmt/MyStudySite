@@ -11,6 +11,8 @@ const allowedOrigins = [
   'http://192.168.0.43:5500'
 ];
 
+
+
 app.use(cors({
   origin: function (origin, callback) {
     console.log('🔥 요청 origin:', origin);
